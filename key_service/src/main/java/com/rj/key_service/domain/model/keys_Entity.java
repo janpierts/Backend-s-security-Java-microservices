@@ -1,26 +1,28 @@
 package com.rj.key_service.domain.model;
 
 import java.time.LocalDateTime;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class keysEntity {
+@RedisHash("security_keys")
+public class keys_Entity {
+    @Id
     private int id;
     private String publicKey;
-    private String privateKey;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime updatedAt;
     private boolean state;
 
-    public keysEntity() {
+    public keys_Entity() {
     }
 
-    public keysEntity(int id, String publicKey, String privateKey, LocalDateTime createdAt, LocalDateTime updatedAt,
+    public keys_Entity(int id, String publicKey, String privateKey, LocalDateTime createdAt, LocalDateTime updatedAt,
             boolean state) {
         this.id = id;
         this.publicKey = publicKey;
-        this.privateKey = privateKey;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.state = state;
@@ -36,12 +38,6 @@ public class keysEntity {
     }
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
-    }
-    public String getPrivateKey() {
-        return privateKey;
-    }
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
     }
     public LocalDateTime getCreatedAt() {
         return createdAt;
