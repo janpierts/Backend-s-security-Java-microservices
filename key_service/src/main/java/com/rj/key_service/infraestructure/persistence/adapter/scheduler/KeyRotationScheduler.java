@@ -1,12 +1,15 @@
 package com.rj.key_service.infraestructure.persistence.adapter.scheduler;
 
-import org.springframework.scheduling.annotation.Scheduled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.scheduling.annotation.Scheduled;
 import com.rj.key_service.domain.ports.in.RotateKeyUseCase;
 
 @Component
 public class KeyRotationScheduler {
     private final RotateKeyUseCase rotateKeysUseCase;
+    private static final Logger log = LoggerFactory.getLogger(KeyRotationScheduler.class);
 
     public KeyRotationScheduler(RotateKeyUseCase rotateKeysUseCase) {
         this.rotateKeysUseCase = rotateKeysUseCase;
@@ -15,7 +18,7 @@ public class KeyRotationScheduler {
     // O usa cron para medianoche: @Scheduled(cron = "0 0 0 * * *")
     @Scheduled(fixedRate = 86400000) 
     public void scheduledRotation() {
-        System.out.println("Cron interno: Iniciando rotación automática de llaves...");
+        log.info("Iniciando rotación automática...");
         rotateKeysUseCase.execute(); 
     }
 }
