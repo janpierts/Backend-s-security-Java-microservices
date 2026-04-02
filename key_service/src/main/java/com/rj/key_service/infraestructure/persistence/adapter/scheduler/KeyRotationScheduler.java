@@ -14,8 +14,7 @@ public class KeyRotationScheduler {
     public KeyRotationScheduler(RotateKeyUseCase rotateKeysUseCase) {
         this.rotateKeysUseCase = rotateKeysUseCase;
     }
-    // Se ejecuta cada 24 horas (86400000 ms)
-    // O usa cron para medianoche: @Scheduled(cron = "0 0 0 * * *")
+
     @Scheduled(fixedRate = 86400000) 
     public void scheduledRotation() {
         log.info("Iniciando rotación automática...");
