@@ -2,11 +2,13 @@ package com.rj.keys.infraestructure.api;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.rj.keys.domain.model.private_key_Entity;
 import com.rj.keys.domain.model.public_keys_Entity;
 import com.rj.keys.domain.service.Keys_Service;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
@@ -16,9 +18,14 @@ public class KeysServiceController {
     public KeysServiceController(Keys_Service keysService) {
         this.keysService = keysService;
     }
-    @PostMapping("SetKey")
-    public ResponseEntity<public_keys_Entity> setKey() {
-        public_keys_Entity key = keysService.SetKey();
-        return new ResponseEntity<>(key, HttpStatus.CREATED);
+    @GetMapping("getPublicKeys")
+    public ResponseEntity<List<public_keys_Entity>> getPublicKeys() {
+        List<public_keys_Entity> keys = keysService.getPublicKeys();
+        return new ResponseEntity<>(keys, HttpStatus.FOUND);
+    }
+    @GetMapping("getPrivateKey")
+    public ResponseEntity<private_key_Entity> getPrivateKey() {
+        private_key_Entity key = keysService.getPrivateKey();
+        return new ResponseEntity<>(key, HttpStatus.FOUND);
     }
 }
