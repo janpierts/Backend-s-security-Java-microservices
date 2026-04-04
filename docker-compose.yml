@@ -23,7 +23,7 @@ services:
       dockerfile: publickey.dockerfile
     container_name: keys
     ports:
-      - "8082:8082"
+      - "8082:8081"
     environment:
       - SPRING_DATA_REDIS_HOST=redis-cluster-keys
       - SPRING_DATA_REDIS_PORT=6379
