@@ -23,3 +23,4 @@ public class LoginAdapter {
         this.restTemplate = restTemplate;
     }
 }
+ 
