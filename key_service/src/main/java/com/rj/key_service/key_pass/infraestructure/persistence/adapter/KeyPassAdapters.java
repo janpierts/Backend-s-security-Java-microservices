@@ -7,15 +7,16 @@ import com.rj.key_service.key_pass.domain.model.key_pass_request_Entity;
 import com.rj.key_service.key_pass.domain.model.key_pass_up_JSON_Entity;
 import com.rj.key_service.key_pass.domain.ports.out.Key_pass_RepositoryPort;
 import com.rj.key_service.key_pass.infraestructure.persistence.repository.KeyPassRedisRepository;
+import com.rj.key_service.utils.config.settings.JDBCConfig;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +31,23 @@ public class KeyPassAdapters implements Key_pass_RepositoryPort {
     @Value("${spring.datasource.driver-class-name}")
     private String datasourceDriverClassName;
     private final KeyPassRedisRepository repository;
-    public KeyPassAdapters(KeyPassRedisRepository repository) {
+    private final JDBCConfig DBConfig;
+    private volatile JdbcTemplate jdbcTemplate;
+    public KeyPassAdapters(KeyPassRedisRepository repository, JDBCConfig DBConfig) {
         this.repository = repository;
+        this.DBConfig = DBConfig;
     }
     
     private JdbcTemplate getDynamicJdbcTemplate(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(datasourceDriverClassName);
-        dataSource.setUrl(datasourceUrl);
-        dataSource.setUsername(datasourceUsername);
-        dataSource.setPassword(datasourcePassword);
-        return new JdbcTemplate(dataSource);
+        if(this.jdbcTemplate == null) {
+            synchronized(this){
+                if(this.jdbcTemplate == null) {
+                    DataSource ds = DBConfig.createDataSource(datasourceUrl, datasourceUsername, datasourcePassword, datasourceDriverClassName);
+                    this.jdbcTemplate = new JdbcTemplate(ds);
+                }
+            }
+        }
+        return this.jdbcTemplate;
     }
     @Override
     @Transactional
